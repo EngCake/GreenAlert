@@ -1,2 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Game;
+
+var gameStartupOptions = GameStartupOptions.Create(
+    title: "Green Alert"
+);
+using var game = new GameClass(gameStartupOptions);
+game.Run();
