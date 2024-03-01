@@ -1,7 +1,7 @@
 ﻿using Nez;
 using Nez.Sprites;
 
-namespace Game.Scenes.Main.Tiles;
+namespace Game.Scenes.Main.Ground;
 
 internal class CrystalTree : Entity {
     public override void OnAddedToScene() {
