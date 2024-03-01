@@ -3,21 +3,16 @@ using Nez;
 
 namespace Game;
 
-internal struct GameStartupOptions {
-    public string Title { get; private set; }
-
-    public static GameStartupOptions Create(string title) { 
-        return new GameStartupOptions {
-            Title = title 
-        }; 
-    }
-}
-
 internal class GameClass : Core {
-    public GameClass(GameStartupOptions gameStartupOptions): base(windowTitle: gameStartupOptions.Title) {
+    public GameClass(): base(
+        windowTitle: Constants.Window.Title,
+        width: Constants.Window.Width,
+        height: Constants.Window.Height
+    ) {
     }
 
     protected override void BeginRun() {
+        Screen.SetSize(Constants.Window.Width, Constants.Window.Height);
         Scene = new MainScene();
     }
 }

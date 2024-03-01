@@ -7,12 +7,12 @@ internal class Grid : SceneComponent {
     public int Cols { get; }
     public int Rows { get; }
     private readonly Vector2 gridSize;
-    private readonly Entity[,] entities;
+    private readonly Tile[,] tiles;
 
     public Grid(int colsCount, int rowsCount, Vector2 gridSize) {
-        entities = new Entity[colsCount, rowsCount];
-        this.Cols = colsCount;
-        this.Rows = rowsCount;
+        tiles = new Tile[colsCount, rowsCount];
+        Cols = colsCount;
+        Rows = rowsCount;
         this.gridSize = gridSize;
     }
 
@@ -21,7 +21,7 @@ internal class Grid : SceneComponent {
             if (x >= Cols || y >= Rows) {
                 throw new ArgumentException($"Grid[{x}, {y}] isn't valid for a grid of size ({Cols}, {Rows})");
             }
-            return entities[x, y];
+            return tiles[x, y];
         }
         set {
             if (x >= Cols || y >= Rows) {
@@ -34,7 +34,7 @@ internal class Grid : SceneComponent {
 #endif
             value.Position = GetWorldCoordinates(x, y);
             Scene.AddEntity(value);
-            entities[x, y] = value;
+            tiles[x, y] = value;
         }
     }
 

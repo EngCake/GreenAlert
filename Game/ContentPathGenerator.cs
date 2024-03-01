@@ -22,6 +22,11 @@ namespace Nez
     {
 		public static class Sprites
 		{
+			public static class Plants
+			{
+				public const string Crystal_tree = @"Content\Sprites\Plants\crystal_tree.png";
+			}
+
 			public static class Tiles
 			{
 				public const string Placeholder = @"Content\Sprites\Tiles\placeholder.png";
