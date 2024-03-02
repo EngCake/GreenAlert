@@ -1,4 +1,4 @@
-﻿using Game.Scenes.Main;
+﻿using Game.Scenes;
 using Nez;
 
 namespace Game;

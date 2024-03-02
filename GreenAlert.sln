@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Game\Game.csproj", "{CD20FAAA-6F70-4486-8212-F9E0EAAF951D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game", "Game\Game.csproj", "{CD20FAAA-6F70-4486-8212-F9E0EAAF951D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nez.MG38", "Nez\Nez.Portable\Nez.MG38.csproj", "{CD197FCF-3C5D-4502-A30D-D844F9523964}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LDtk", "LDtkMonogame\LDtk\LDtk.csproj", "{CBE66B90-42AE-4097-A3CE-9CA6FABAD264}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CD197FCF-3C5D-4502-A30D-D844F9523964}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD197FCF-3C5D-4502-A30D-D844F9523964}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD197FCF-3C5D-4502-A30D-D844F9523964}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE66B90-42AE-4097-A3CE-9CA6FABAD264}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE66B90-42AE-4097-A3CE-9CA6FABAD264}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE66B90-42AE-4097-A3CE-9CA6FABAD264}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE66B90-42AE-4097-A3CE-9CA6FABAD264}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

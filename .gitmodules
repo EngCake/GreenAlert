@@ -1,3 +1,6 @@
 [submodule "Nez"]
 	path = Nez
 	url = https://github.com/prime31/Nez.git
+[submodule "LDtkMonogame"]
+	path = LDtkMonogame
+	url = https://github.com/IrishBruse/LDtkMonogame.git
