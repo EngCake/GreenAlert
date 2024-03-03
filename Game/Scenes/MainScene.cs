@@ -23,18 +23,12 @@ internal class MainScene : Scene
 
     public override void Update()
     {
-        ResetLights();
-        UpdateLights();
         base.Update();
     }
-    
-    private void ResetLights()
+
+    public void UpdateLights()
     {
         Entities.EntitiesOfType<Tile>().ForEach(tile => tile.LightsCount = 0);
-    }
-
-    private void UpdateLights()
-    {
         Entities.FindComponentsOfType<LightSource>().ForEach(lightSource => lightSource.Light());
     }
 

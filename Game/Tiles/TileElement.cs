@@ -6,7 +6,7 @@ using Nez.Sprites;
 
 namespace Game.Tiles;
 
-internal abstract class TileElement : Entity, IUpdatable
+internal abstract class TileElement : BaseEntity, IUpdatable
 {
     public AnimationDictionary? AnimationDictionary;
 
@@ -16,6 +16,7 @@ internal abstract class TileElement : Entity, IUpdatable
 
     public override void OnAddedToScene()
     {
+        base.OnAddedToScene();
         ArgumentNullException.ThrowIfNull(AnimationDictionary);
 
         Animator = AddComponent<SpriteAnimator>();
