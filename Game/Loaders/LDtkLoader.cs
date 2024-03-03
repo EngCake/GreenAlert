@@ -20,9 +20,16 @@ internal class LDtkLoader : SceneComponent
 
     private const string DecorationsLayer = "Decorations";
 
-    private const string WallsLayer = "Walls";
+    private const string WallsLayer = "Wall";
 
     private const string EntitiesLayer = "Entities";
+    #endregion
+
+    #region EntitiesIdentifiers
+    private const string Chest = "Chest";
+    private const string CrystalTree = "CrystalTree";
+    private const string Obstacle = "Obstacle";
+    private const string Player = "Player";
     #endregion
 
     private Texture2D? texture;
@@ -49,7 +56,7 @@ internal class LDtkLoader : SceneComponent
 
             if (layer._Identifier == EntitiesLayer)
             {
-                AddChests(layer);
+                AddEntities(layer);
             }
             else
             {
@@ -58,6 +65,7 @@ internal class LDtkLoader : SceneComponent
                 {
                     case GroundLayer:
                         RenderTiles<Ground>(layer);
+                        MarkGrass(layer.IntGridCsv);
                         break;
                     case PathLayer:
                         RenderTiles<GroundPath>(layer);
@@ -99,35 +107,140 @@ internal class LDtkLoader : SceneComponent
         }
     }
 
+    private void MarkGrass(int[] intGrid)
+    {
+        for (var i = 0; i < tiles!.Cols; i++)
+        {
+            for (var j = 0; j < tiles.Rows; j++)
+            {
+                tiles[i, j].Ground.IsPlantable = (intGrid[i * tiles.Cols + j] == 1) || (intGrid[i * tiles.Cols + j] == 2);
+            }
+        }
+    }
+
     #region Adding entities
-    private void AddChests(LayerInstance layer)
+    private void AddEntities(LayerInstance layer)
+    {
+        foreach (var entity in layer.EntityInstances)
+        {
+            switch (entity._Identifier)
+            {
+                case Chest:
+                    RenderChest(entity);
+                    break;
+                case CrystalTree:
+                    RenderCrystalTree(entity);
+                    break;
+                case Obstacle:
+                    RenderObstacle(entity);
+                    break;
+                case Player:
+                    RenderPlayer(entity);
+                    break;
+            }
+        }
+    }
+
+    private void RenderChest(EntityInstance entity)
     {
         ArgumentNullException.ThrowIfNull(tiles);
         ArgumentNullException.ThrowIfNull(texture);
 
-        foreach (var entity in layer.EntityInstances)
-        {
-            if (entity._Identifier != "Chest")
-            {
-                continue;
-            }
-            
-            var animationDictionary = new AnimationDictionary();
-            foreach (var field in entity.FieldInstances)
-            {
-                if (field._Identifier == "ClosedSprite")
-                {
-                    var tile = ((JsonElement)field._Value).Deserialize<TilesetRectangle>();
-                    var sprite = new Sprite(texture, tile!);
-                    var animation = new SpriteAnimation([sprite], Constants.FPS);
-                    animationDictionary["opened"] = animation;
-                }
-            }
+        var fields = FieldsToDictionary(entity.FieldInstances);
 
-            var chestEntity = new Entities.Chest();
-            chestEntity.AnimationDictionary = animationDictionary;
-            tiles[entity.Px.ToVector2()].Entity = chestEntity;
+        var animationDictionary = new AnimationDictionary() {
+            { "closed", new SpriteAnimation([SpriteFromField(fields["ClosedSprite"])], Constants.FPS) },
+            { "opened", new SpriteAnimation([SpriteFromField(fields["OpenedSprite"])], Constants.FPS) },
+        };
+        animationDictionary.DefaultAnimation = "closed";
+
+        var chestEntity = new Entities.Chest();
+        chestEntity.AnimationDictionary = animationDictionary;
+        tiles[entity.Px.ToVector2()].Entity = chestEntity;
+    }
+
+    private void RenderCrystalTree(EntityInstance entity)
+    {
+        ArgumentNullException.ThrowIfNull(tiles);
+        ArgumentNullException.ThrowIfNull(texture);
+
+        var fields = FieldsToDictionary(entity.FieldInstances);
+        var lightRadius = FromField<int>(fields["LightRadius"]);
+        var animationDictionary = new AnimationDictionary() {
+            { "tree", new SpriteAnimation([SpriteFromField(fields["Sprite"])], Constants.FPS) },
+        };
+
+        var crystalTree = new Entities.CrystalTree(lightRadius);
+        crystalTree.AnimationDictionary = animationDictionary;
+
+        tiles[entity.Px.ToVector2()].Entity = crystalTree;
+    }
+
+    private void RenderObstacle(EntityInstance entity)
+    {
+        ArgumentNullException.ThrowIfNull(tiles);
+        ArgumentNullException.ThrowIfNull(texture);
+
+        var fields = FieldsToDictionary(entity.FieldInstances);
+        var animationDictionary = new AnimationDictionary() {
+            { "obstacle", new SpriteAnimation([SpriteFromField(fields["Sprite"])], Constants.FPS) },
+        };
+
+        var obstacle = new Entities.Obstacle();
+        obstacle.AnimationDictionary = animationDictionary;
+
+        tiles[entity.Px.ToVector2()].Entity = obstacle;
+    }
+
+    private void RenderPlayer(EntityInstance entity)
+    {
+        ArgumentNullException.ThrowIfNull(tiles);
+        ArgumentNullException.ThrowIfNull(texture);
+
+        var fields = FieldsToDictionary(entity.FieldInstances);
+        var animationDictionary = new AnimationDictionary() {
+            { "idle", new SpriteAnimation([SpriteFromField(fields["Idle1"]), SpriteFromField(fields["Idle2"])], Constants.FPS) },
+            { "walking", new SpriteAnimation(
+                    [
+                        SpriteFromField(fields["Walking1"]),
+                        SpriteFromField(fields["Walking2"]),
+                        SpriteFromField(fields["Walking3"]),
+                        SpriteFromField(fields["Walking4"]),
+                    ],
+                    Constants.FPS
+                )
+            },
+        };
+        animationDictionary.DefaultAnimation = "idle";
+
+        var player = new Entities.Player();
+        player.AnimationDictionary = animationDictionary;
+
+        tiles[entity.Px.ToVector2()].Entity = player;
+    }
+    #endregion
+
+    #region Helpers
+    private Dictionary<string, FieldInstance> FieldsToDictionary(FieldInstance[] fields)
+    {
+        var result = new Dictionary<string, FieldInstance>();
+        foreach (var field in fields)
+        {
+            result[field._Identifier] = field;
         }
+        return result;
+    }
+
+    private Sprite SpriteFromField(FieldInstance field)
+    {
+        var tile = ((JsonElement)field._Value).Deserialize<TilesetRectangle>();
+        var sprite = new Sprite(texture, tile!);
+        return sprite;
+    }
+
+    private T FromField<T>(FieldInstance field)
+    {
+        return ((JsonElement)field._Value).Deserialize<T>()!;
     }
     #endregion
 }

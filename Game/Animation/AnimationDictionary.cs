@@ -23,6 +23,11 @@ internal class AnimationDictionary : IEnumerable<Tuple<string, SpriteAnimation>>
         }
     }
 
+    public void Add(string animationName, SpriteAnimation animation)
+    {
+        this[animationName] = animation;
+    }
+
     public IEnumerator<Tuple<string, SpriteAnimation>> GetEnumerator()
     {
         foreach (var (key, value) in animations)

@@ -1,4 +1,4 @@
-﻿using Game.Components.Light;
+﻿using Game.Components;
 using Game.Tiles;
 
 namespace Game.Entities;
@@ -10,7 +10,7 @@ internal class Wall : TileElement
     public override void OnAddedToScene()
     {
         base.OnAddedToScene();
-        AddComponent<LightObstruction>();
-        RenderLayer = Constants.RenderingLayers.Wall;
+        AddComponent(new ColliderShape(1, 0.3f, true));
+        RenderLayer = Constants.RenderingLayers.WallsAndEntities;
     }
 }

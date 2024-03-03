@@ -22,7 +22,6 @@ namespace Nez
     {
 		public static class Levels
 		{
-			public const string Character = @"Content\Levels\character.png";
 			public const string Main = @"Content\Levels\main.ldtk";
 		}
 
@@ -32,6 +31,11 @@ namespace Nez
 			public const string FireEffects = @"Content\Sprites\FireEffects.png";
 			public const string IceEffects = @"Content\Sprites\IceEffects.png";
 			public const string Tileset = @"Content\Sprites\Tileset.png";
+		}
+
+		public static class UI
+		{
+			public const string Select = @"Content\UI\select.png";
 		}
 
 

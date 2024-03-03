@@ -6,87 +6,55 @@ namespace Game.Components.Light;
 
 internal class LightSource : Component
 {
-    public float LightIntensity;
+    public float LightRadius { get; private set; }
+
     private TilesContainer? grid;
 
-    public LightSource(float lightIntensity)
+    public LightSource(float lightRadius)
     {
-        LightIntensity = lightIntensity;
+        LightRadius = lightRadius;
     }
 
     public override void OnAddedToEntity()
     {
         grid = Entity.Scene.GetSceneComponent<TilesContainer>();
-        AddLight();
     }
 
-    public override void OnRemovedFromEntity()
+    public void Light()
     {
-        RemoveLight();
-    }
+        ArgumentNullException.ThrowIfNull(grid);
 
-    private void AddLight()
-    {
-        for (var i = 0; i < grid!.Cols; i++)
+        //int top = (int) Math.Max(0, (Entity.Position.Y - LightRadius * 2) / grid.Height);
+        //int bottom = (int)Math.Min(grid.Rows - 1, (Entity.Position.Y + LightRadius * 2) / grid.Height);
+        //int left = (int)Math.Max(0, (Entity.Position.X - LightRadius * 2) / grid.Width);
+        //int right = (int)Math.Min(grid.Cols - 1, (Entity.Position.X + LightRadius * 2) / grid.Width);
+
+        int top = 0;
+        int bottom = grid.Rows - 1;
+        int left = 0;
+        int right = grid.Cols - 1;
+
+        for (int i = top; i <= bottom; i++)
         {
-            for (var j = 0; j < grid!.Rows; j++)
+            for (int j = left; j <= right; j++)
             {
                 var tile = grid![i, j];
-                LightTile(tile!);
+                if (CheckIfLightPassesTo(tile.Position, Entity.Position) && CheckLightAt(tile.Position))
+                {
+                    tile.LightsCount++;
+                }
             }
         }
     }
 
-    private void RemoveLight()
+    private bool CheckLightAt(Vector2 otherPosition)
     {
-        for (var i = 0; i < grid!.Cols; i++)
-        {
-            for (var j = 0; j < grid!.Rows; j++)
-            {
-                var tile = grid![i, j];
-                UnlightTile(tile!);
-            }
-        }
-    }
-
-    private void LightTile(Tile tile)
-    {
-        foreach (var gridElement in tile)
-        {
-            var lightable = gridElement.GetComponent<Lightable>();
-            if (lightable is not null)
-            {
-                lightable.AddLight(CalculateLightIntensityAt(tile.Position));
-            }
-        }
-    }
-
-    private void UnlightTile(Tile tile)
-    {
-        foreach (var gridElement in tile)
-        {
-            var lightable = gridElement.GetComponent<Lightable>();
-            if (lightable is not null)
-            {
-                lightable.RemoveLight(CalculateLightIntensityAt(tile.Position));
-            }
-        }
-    }
-
-    private float CalculateLightIntensityAt(Vector2 otherPosition)
-    {
-        if (HasLightObstructionBetween(otherPosition, Entity.Position))
-        {
-            return 0;
-        }
         var distance = Vector2.Distance(Entity.Position, otherPosition);
-        var intensity = Math.Clamp(LightIntensity / distance, 0, 1);
-        return intensity;
+        return distance <= LightRadius;
     }
 
-    private bool HasLightObstructionBetween(Vector2 from, Vector2 to)
+    private bool CheckIfLightPassesTo(Vector2 entityPosition, Vector2 lightPosition)
     {
-        var hit = Physics.Linecast(from, to, LightObstruction.ColliderLayer);
-        return hit.Collider is not null;
+        return Physics.Linecast(entityPosition, lightPosition, Constants.PhysicsLayers.LightBlockingCollider).Collider is null;
     }
 }

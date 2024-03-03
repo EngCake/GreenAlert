@@ -77,8 +77,10 @@ internal class TilesContainer : SceneComponent
     public (int, int) GetIndex(Vector2 position)
     {
         return (
-            (int)position.X / Width,
-            (int)position.Y / Height
+            (int)(position.X + Width / 2)/ Width,
+            (int)(position.Y + Height / 2) / Height
         );
     }
+
+    public Vector2 TileSize => new Vector2(Width, Height);
 }
