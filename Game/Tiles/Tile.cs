@@ -38,6 +38,7 @@ internal class Tile : Entity, IUpdatable, IEnumerable<TileElement>
             if (Input.LeftMouseButtonPressed)
             {
                 Decoration = null;
+                Entity = new CrystalTree(75);
             }
         }
         else
@@ -64,7 +65,7 @@ internal class Tile : Entity, IUpdatable, IEnumerable<TileElement>
     {
         base.OnAddedToScene();
         tiles = Scene.GetSceneComponent<TilesContainer>();
-        var texture = Scene.Content.LoadTexture(Content.UI.Select);
+        var texture = Scene.Content.LoadTexture(Content.Sprites.UI.Select);
         selectBox = AddComponent(new SpriteRenderer(texture));
         selectBox.RenderLayer = Constants.RenderingLayers.Select;
         selectBox.Enabled = false;

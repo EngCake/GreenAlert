@@ -27,15 +27,16 @@ namespace Nez
 
 		public static class Sprites
 		{
+			public static class UI
+			{
+				public const string Select = @"Content\Sprites\UI\select.png";
+			}
+
 			public const string DendroEffect = @"Content\Sprites\DendroEffect.png";
 			public const string FireEffects = @"Content\Sprites\FireEffects.png";
+			public const string Fruit = @"Content\Sprites\fruit.png";
 			public const string IceEffects = @"Content\Sprites\IceEffects.png";
 			public const string Tileset = @"Content\Sprites\Tileset.png";
-		}
-
-		public static class UI
-		{
-			public const string Select = @"Content\UI\select.png";
 		}
 
 
